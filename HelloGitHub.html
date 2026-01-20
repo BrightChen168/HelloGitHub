@@ -22,6 +22,68 @@
             --radius: 8px;
             --container-width: 1100px;
         }
+        /* 动态背景动画 */
+        @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+        }
+        
+        /* 脉冲动画 */
+        @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+        }
+        
+        /* 淡入动画 */
+        @keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+        }
+        
+        /* 添加到hero区域 */
+        .hero {
+    padding: 100px 0;
+    text-align: center;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+        }
+        
+        /* 修改按钮样式 */
+        .btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: 1px solid transparent;
+    animation: pulse 2s infinite;
+        }
+        
+        /* 添加卡片发光效果 */
+        .card:hover, .repo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(3, 102, 214, 0.3);
+            border-color: var(--primary-color);
+        }
+
+/* 添加导航栏滚动效果 */
+header.scrolled {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-md);
+}
+
+/* 添加淡入效果类 */
+.fade-in-up {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+}
+        
 
         * {
             margin: 0;
@@ -369,6 +431,44 @@
         }
     </style>
 </head>
+<script>
+// 导航栏滚动效果
+window.addEventListener('scroll', function() {
+    const header = document.querySelector('header');
+    if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+    } else {
+        header.classList.remove('scrolled');
+    }
+});
+
+// 元素滚动淡入效果
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in-up');
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+// 观察所有卡片和标题
+document.querySelectorAll('.card, .repo-card, .section-title').forEach(el => {
+    observer.observe(el);
+});
+
+// 为hero区域元素添加延迟动画
+document.querySelector('.hero h1').style.animationDelay = '0.2s';
+document.querySelector('.hero p').style.animationDelay = '0.4s';
+document.querySelectorAll('.hero-actions .btn').forEach((btn, index) => {
+    btn.style.animationDelay = `${0.6 + index * 0.2}s`;
+});
+</script>
 <body>
 
     <!-- 导航栏 -->
@@ -397,16 +497,15 @@
     <main>
         <!-- Hero 区域 -->
         <section class="hero">
-            <div class="container">
-                <h1>发现有趣的 GitHub 开源项目</h1>
-                <p>HelloGitHub 是一个帮你发现有趣、入门级开源项目的平台。无论你是编程新手还是资深开发者，这里都有属于你的宝藏。</p>
-                <div class="hero-actions">
+             <div class="container">
+                <h1 class="fade-in-up">发现有趣的 GitHub 开源项目</h1>
+                <p class="fade-in-up">HelloGitHub 是一个帮你发现有趣、入门级开源项目的平台。无论你是编程新手还是资深开发者，这里都有属于你的宝藏。</p>
+                <div class="hero-actions fade-in-up">
                     <a href="#showcase" class="btn btn-primary">浏览项目</a>
                     <a href="#about" class="btn btn-outline">了解更多</a>
                 </div>
             </div>
         </section>
-
         <!-- 特色介绍 -->
         <section id="features" class="features">
             <div class="container">
